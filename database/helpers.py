@@ -1,3 +1,4 @@
+from db_connect import connect
 
 
 def create_small_copy(file_path, file_name):
@@ -5,3 +6,15 @@ def create_small_copy(file_path, file_name):
         for i in range(1500):
             line = file_in.readline()
             file_out.write(line)
+
+
+def replace_from_csv(file, table):
+    conn = connect()
+    cur = conn.cursor()
+    with open(file, 'r') as f:
+        cur.execute('DELETE FROM {};'.format(table))
+        next(f)
+        cur.copy_from(f, table, sep=',')
+        conn.commit()
+
+    conn.close()
