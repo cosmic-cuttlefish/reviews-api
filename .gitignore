@@ -16,3 +16,5 @@ jspm_packages/
 .env
 
 package-lock.json
+
+database/data
