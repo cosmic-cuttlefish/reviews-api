@@ -165,7 +165,7 @@ def load_characteristic(small=False):
     replace_from_csv(transformed_file, table)
     os.remove(transformed_file)
 
-
+""" ********** THE METHOD BELOW OF INDIVIDUALLY UPDATING THE CHARACTERISTIC SCORE WILL TAKE ~ 11 HOURS
 def load_characteristic_reviews(small=False):
     file_path = './data/'
     file_name = 'characteristic_reviews.csv'
@@ -185,6 +185,10 @@ def load_characteristic_reviews(small=False):
                     f"WHERE id = {row['characteristic_id']}")
         if index % 10000 == 0:
             cur.execute('VACUUM ANALYZE')
+            print(index)
+            end = time.time()
+            print(end - start)
+            start = end
 
     conn.close()
     end = time.time()
@@ -192,10 +196,38 @@ def load_characteristic_reviews(small=False):
 
 # load_characteristic()
 load_characteristic_reviews(False)
+"""
+
+
+def transform_characteristic_score(small=False):
+    table = 'characteristic'
+    start = time.time()
+
+    conn = connect()
+    cur = conn.cursor()
+    conn.set_session(autocommit=True)
+
+    cur.execute("SELECT COUNT(*) FROM characteristic;")
+    characteristics = cur.fetchone()[0]
+    for char_id in range(characteristics):
+        insert = "INSERT INTO characteristic_scored " \
+                 "(id, name, score, reviews, product_id) " \
+                 " SELECT c.id, c.name, SUM(cr.value), COUNT(cr.value), c.product_id " \
+                 "FROM characteristic c LEFT JOIN characteristic_reviews cr ON c.id = cr.characteristic_id " \
+                 f"WHERE cr.characteristic_id = {char_id} " \
+                 "GROUP BY c.id;"
+        cur.execute(insert)
+        if char_id % 100000 == 0:
+            print(char_id, time.time() - start)
+
+    conn.close()
+    end = time.time()
+    print(f"{(end - start) / 60} minutes {(end - start) % 60} seconds")
 
 """
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ LOAD ALL ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 """
+transform_characteristic_score()
 
 
 def load_all():

@@ -63,6 +63,39 @@ CREATE TABLE characteristic (
   PRIMARY KEY (id)
 );
 
+
+-- ---
+-- Table 'characteristic_reviews'
+--
+-- ---
+
+DROP TABLE IF EXISTS characteristic_reviews CASCADE;
+
+CREATE TABLE characteristic_reviews (
+  id INTEGER NOT NULL,
+  characteristic_id INTEGER NOT NULL,
+  review_id INTEGER NOT NULL,
+  value INTEGER NOT NULL,
+  PRIMARY KEY (id)
+);
+
+
+-- ---
+-- Table 'characteristic_scored' < -- with populated scored
+--
+-- ---
+
+DROP TABLE IF EXISTS characteristic_scored CASCADE;
+
+CREATE TABLE characteristic_scored (
+  id INTEGER NOT NULL,
+  name VARCHAR(25) NOT NULL,
+  score INTEGER NOT NULL DEFAULT 0,
+  reviews INTEGER NOT NULL DEFAULT 0,
+  product_id INTEGER NOT NULL,
+  PRIMARY KEY (id)
+);
+
 -- ---
 -- Foreign Keys
 -- ---
@@ -70,4 +103,9 @@ CREATE TABLE characteristic (
 ALTER TABLE review ADD FOREIGN KEY (product_id) REFERENCES meta (product_id);
 ALTER TABLE review_photo ADD FOREIGN KEY (review_id) REFERENCES review (id);
 ALTER TABLE characteristic ADD FOREIGN KEY (product_id) REFERENCES meta (product_id);
+ALTER TABLE characteristic_scored ADD FOREIGN KEY (product_id) REFERENCES meta (product_id);
+ALTER TABLE characteristic_reviews ADD FOREIGN KEY (characteristic_id) REFERENCES characteristic (id);
+ALTER TABLE characteristic_reviews ADD FOREIGN KEY (review_id) REFERENCES review (id);
+CREATE INDEX ON review (product_id);
 CREATE INDEX ON characteristic (product_id);
+CREATE INDEX ON characteristic_reviews (characteristic_id);
