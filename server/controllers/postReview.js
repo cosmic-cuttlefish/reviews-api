@@ -1,4 +1,4 @@
-module.exports = function addReview(req, res) {
+module.exports = function postReview(req, res) {
   res.send(
     "addReview for " +
       req.params.productid +
