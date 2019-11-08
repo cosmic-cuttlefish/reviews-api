@@ -1,9 +1,8 @@
-from helpers import create_small_copy, replace_from_csv
-from db_connect import connect
+from mongo_connect import connect
+import json
 import pandas as pd
 import numpy as np
 import os
-from math import floor
 import time
 
 """
@@ -11,42 +10,26 @@ import time
 """
 
 
-def transform_product_csv(file_path, file_name, small=False):
-    if small:
-        create_small_copy(file_path, file_name)
-        file_name = 'small_' + file_name
-
-    dtype = {'id': np.integer, 'name': str, 'slogan': str, 'description': str, 'category': str,
-             'default_price': np.integer}
-    df = pd.read_csv(file_path + file_name, dtype=dtype)
-    df = df['id']
+def transform_product_json(file_path, file_name):
+    df = pd.read_csv(file_path + file_name)
+    df.drop(df.columns[[1, 2, 3, 4, 5]], axis=1, inplace=True)
     df.columns = ['product_id']
-    df.insert(1, 'rating_0', 0)
-    df.insert(2, 'rating_1', 0)
-    df.insert(3, 'rating_2', 0)
-    df.insert(4, 'rating_3', 0)
-    df.insert(5, 'rating_4', 0)
-    df.insert(6, 'rating_5', 0)
-    df.to_csv(file_path + 'transformed_' + file_name, index=False)
 
-    if small:
-        os.remove(file_path + file_name)
+    df.to_json(file_path + 'transformed_products.json')  # saving to json file
 
 
-def load_meta(small=False):
+def load_meta_mongo():
     file_path = './data/'
     file_name = 'product.csv'
-    table = 'meta'
 
-    transform_product_csv(file_path, file_name, small)
+    transform_product_json(file_path, file_name)
+    transformed_file = file_path + 'transformed_products.json'
+    jdf = open(transformed_file).read()  # loading the json file
+    data = json.loads(jdf)
+    # db = connect()
+    # db.reviews.insert_many(data)
 
-    # if small:
-    #     transformed_file = file_path + 'transformed_' + 'small_' + file_name
-    # else:
-    #     transformed_file = file_path + 'transformed_' + file_name
-    # replace_from_csv(transformed_file, table)
-    # os.remove(transformed_file)
-
+load_meta_mongo()
 """
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ REVIEW ETL ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 """
@@ -200,7 +183,9 @@ load_characteristic_reviews(False)
 
 
 def transform_characteristic_score(small=False):
+    table = 'characteristic'
     start = time.time()
+
     conn = connect()
     cur = conn.cursor()
     conn.set_session(autocommit=True)
@@ -216,57 +201,16 @@ def transform_characteristic_score(small=False):
                  "GROUP BY c.id;"
         cur.execute(insert)
         if char_id % 100000 == 0:
-            print(f"calculated {char_id} characteristic scores, time elapsed: {floor(time.time() - start)} seconds")
-
-    conn.close()
-    end = time.time()
-    print(f"{floor((end - start) / 60)} minutes {(end - start) % 60} seconds")
-
-
-"""
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Add Meta Scores ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-"""
-
-
-def transform_meta_scores():
-    start = time.time()
-    conn = connect()
-    cur = conn.cursor()
-    conn.set_session(autocommit=True)
-
-    cur.execute("SELECT COUNT(*) FROM meta;")
-    product_ids = cur.fetchone()[0]
-    for product_id in range(product_ids):
-        update_ratings = "UPDATE meta " \
-                         "SET rating_1 = " \
-                         f"(SELECT COUNT(rating) FROM review WHERE product_id = {product_id} AND rating = 1), " \
-                         "rating_2 = " \
-                         f"(SELECT COUNT(rating) FROM review WHERE product_id = {product_id} AND rating = 2), " \
-                         "rating_3 = " \
-                         f"(SELECT COUNT(rating) FROM review WHERE product_id = {product_id} AND rating = 3), " \
-                         "rating_4 = " \
-                         f"(SELECT COUNT(rating) FROM review WHERE product_id = {product_id} AND rating = 4)," \
-                         "rating_5 = " \
-                         f"(SELECT COUNT(rating) FROM review WHERE product_id = {product_id} AND rating = 5) " \
-                         f"WHERE product_id = {product_id};"
-        cur.execute(update_ratings)
-        if product_id % 10000 == 0:
-            print("loaded", product_id, "product scores. Time elapsed:", floor(time.time() - start), "seconds")
+            print(char_id, time.time() - start)
 
     conn.close()
     end = time.time()
     print(f"{(end - start) / 60} minutes {(end - start) % 60} seconds")
 
-transform_meta_scores()
 """
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ LOAD ALL ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 """
 
 
 def load_all():
-    load_meta()
-    load_review()
-    load_photos()
-    load_characteristic()
-    transform_characteristic_score()
-
+    return

@@ -38,7 +38,6 @@ DROP TABLE IF EXISTS meta CASCADE;
 
 CREATE TABLE meta (
   product_id INTEGER NOT NULL,
-  rating_0 INTEGER DEFAULT 0,
   rating_1 INTEGER DEFAULT 0,
   rating_2 INTEGER DEFAULT 0,
   rating_3 INTEGER DEFAULT 0,
@@ -109,3 +108,4 @@ ALTER TABLE characteristic_reviews ADD FOREIGN KEY (review_id) REFERENCES review
 CREATE INDEX ON review (product_id);
 CREATE INDEX ON characteristic (product_id);
 CREATE INDEX ON characteristic_reviews (characteristic_id);
+CREATE INDEX ON review_photo(review_id);
