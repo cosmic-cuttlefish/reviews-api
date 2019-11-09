@@ -19,6 +19,7 @@ module.exports = {
           helpfulness 
         FROM ${table} 
           WHERE product_id = $1 
+          AND reported = false
           LIMIT $2
           OFFSET $3;`,
         [productId, limit, (page - 1) * limit]
@@ -52,7 +53,7 @@ module.exports = {
     const client = await pool.connect();
     try {
       res = await client.query(
-        `UDPATE ${table} SET helpfulness = helpfulness + 1 WHERE id = $1;`,
+        `UPDATE ${table} SET helpfulness = helpfulness + 1 WHERE id = $1;`,
         [reviewId]
       );
     } catch (err) {
@@ -68,7 +69,7 @@ module.exports = {
     const client = await pool.connect();
     try {
       res = await client.query(
-        `UDPATE ${table} SET reported = true WHERE id = $1;`,
+        `UPDATE ${table} SET reported = true WHERE id = $1;`,
         [reviewId]
       );
     } catch (err) {
@@ -77,6 +78,19 @@ module.exports = {
       client.release();
     }
     return res;
+  },
+
+  addReview: async function addReview(data) {
+    const {
+      rating,
+      summary,
+      body,
+      recommend,
+      name,
+      email,
+      photos,
+      characteristics
+    } = data;
   },
 
   testConnection: async function testConnection() {

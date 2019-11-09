@@ -107,5 +107,6 @@ ALTER TABLE characteristic_reviews ADD FOREIGN KEY (characteristic_id) REFERENCE
 ALTER TABLE characteristic_reviews ADD FOREIGN KEY (review_id) REFERENCES review (id);
 CREATE INDEX ON review (product_id);
 CREATE INDEX ON characteristic (product_id);
+CREATE INDEX ON characteristic_scored (product_id);
 CREATE INDEX ON characteristic_reviews (characteristic_id);
 CREATE INDEX ON review_photo(review_id);

@@ -7,7 +7,7 @@ const router = require("express").Router();
 
 router.get("/:productid/list", getReviewList);
 router.get("/:productid/meta", getReviewMeta);
-router.post("/:productid/", postReview);
+router.post("/:productid", postReview);
 router.put("/helpful/:reviewid", putHelpful);
 router.put("/report/:reviewid", putReport);
 

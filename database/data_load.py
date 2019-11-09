@@ -100,33 +100,24 @@ def transform_photos_csv(file_path, file_name, small=False):
 
     dtype = {'id': np.integer, 'review_id': np.integer, 'url': str}
     df = pd.read_csv(file_path + file_name, dtype=dtype)
+    df['url'].apply(lambda url: url.replace('"', ''))
     df.to_csv(file_path + 'transformed_' + file_name, index=False)
 
-    if small:
-        os.remove(file_path + file_name)
 
-
-def load_photos(small=False, transform=False):
+def load_photos(small=False):
     file_path = './data/'
     file_name = 'reviews_photos.csv'
     table = 'review_photo'
 
-    if transform:
-        transform_product_csv(file_path, file_name)
+    transform_photos_csv(file_path, file_name, small)
 
-    if small and transform:
-        transformed_file = file_path + 'transformed_' + 'small_' + file_name
-    elif (not small) and transform:
-        transformed_file = file_path + 'transformed_' + file_name
-    elif small and (not transform):
-        transformed_file = file_path + 'small_' + file_name
+    if small:
+        transformed_file = file_path + 'transformed_small_' + file_name
     else:
-        transformed_file = file_path + file_name
+        transformed_file = file_path + 'transformed_' + file_name
 
     replace_from_csv(transformed_file, table)
-    if transform or small:
-        os.remove(transformed_file)
-
+    os.remove(transformed_file)
 
 """
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ CHARACTERISTICS ETL ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -257,7 +248,7 @@ def transform_meta_scores():
     end = time.time()
     print(f"{(end - start) / 60} minutes {(end - start) % 60} seconds")
 
-transform_meta_scores()
+
 """
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ LOAD ALL ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 """
@@ -265,8 +256,14 @@ transform_meta_scores()
 
 def load_all():
     load_meta()
+    print('~~~~~~~~~~~~~~~~~~~ successfully loaded product ids into meta ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
     load_review()
+    print('~~~~~~~~~~~~~~~~~~~~~~~~~ successfully loaded reviews  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
     load_photos()
+    print('~~~~~~~~~~~~~~~~~~~~~~~~~~ successfully loaded photos  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
     load_characteristic()
+    print('~~~~~~~~~~~~~~~~~~~~~ successfully loaded characteristics  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
     transform_characteristic_score()
-
+    print('~~~~~~~~~~~ successfully calculated and loaded characteristic scores  ~~~~~~~~~~~~~~~~~~~~~~~')
+    transform_meta_scores()
+    print('~~~~~~~~~~~~~ successfully calculated and loaded review meta scores  ~~~~~~~~~~~~~~~~~~~~~~~~')
