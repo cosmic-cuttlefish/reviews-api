@@ -2,14 +2,8 @@ version: 2.1
 jobs:
   build:
     docker:
-      - image: circleci/node:4.8.2 # the primary container, where your job's commands are run
+      - image: circleci/node:9.11.2 # the primary container, where your job's commands are run
     steps:
       - checkout # check out the code in the project directory
-      - run:
-          name: get nvm
-          command: curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.1/install.sh | bash
-      - run:
-          name: use later node
-          command: sudo nvm use v10.15.3
       - run: cd server && npm install
       - run: cd server && npm test
