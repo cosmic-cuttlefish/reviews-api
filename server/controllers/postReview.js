@@ -1,5 +1,7 @@
 const { getCharacteristics } = require("../models/characteristics");
-const { addReview } = require("../models/reviews");
+const { addReview, getReviewId } = require("../models/reviews");
+const { addPhotos } = require("../models/photos");
+const { updateScore } = require("../models/characteristics");
 const errMessage = (missing, param) =>
   missing
     ? "missing parameter" + param
@@ -21,7 +23,6 @@ const validateReview = (body, reqCharacteristics) => {
         if (typeof value !== "string") return errMessage(false, param);
         break;
       case "body":
-        console.log("body is length", value.length);
         if (value === undefined) return errMessage(true);
         if (typeof value !== "string" || value.length < 50)
           return errMessage(false, param);
@@ -30,12 +31,12 @@ const validateReview = (body, reqCharacteristics) => {
         if (value === undefined) return errMessage(true);
         if (typeof value !== "boolean") return errMessage(false, param);
         break;
-      case "name":
+      case "reviewer_name":
         if (value === undefined) return errMessage(true);
         if (typeof value !== "string" || value.length > 60)
           return errMessage(false, param);
         break;
-      case "email":
+      case "reviewer_email":
         if (value === undefined) return errMessage(true);
         if (typeof value !== "string" || value.length > 60)
           return errMessage(false, param);
@@ -66,7 +67,7 @@ const validateReview = (body, reqCharacteristics) => {
         break;
     }
   }
-  return true;
+  return false;
 };
 
 module.exports = async function postReview(req, res) {
@@ -77,18 +78,22 @@ module.exports = async function postReview(req, res) {
     res.status(400).send(err);
   } else {
     try {
-      await addReview(req.body);
+      await addReview(productid, req.body);
+      // FIXME: optimize with id instead of select
+      const reviewId = await getReviewId(productid, req.body);
+      if (req.body.photos && req.body.photos.length > 0) {
+        await addPhotos(reviewId, req.body.photos);
+      }
+      for (let characteristicId of Object.keys(req.body.characteristics)) {
+        const rating = req.body.characteristics[characteristicId];
+        await updateScore(characteristicId, rating);
+      }
       res.sendStatus(201);
     } catch (err) {
+      console.error(err);
       res.sendStatus(500);
     }
   }
-  res.send(
-    "addReview for " +
-      req.params.productid +
-      "with body " +
-      JSON.stringify(req.body)
-  );
 };
 
 /*

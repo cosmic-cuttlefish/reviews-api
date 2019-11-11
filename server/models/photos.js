@@ -20,5 +20,21 @@ module.exports = {
       client.release();
     }
     return res.rows;
+  },
+
+  addPhotos: async function addPhotos(id, urls) {
+    const client = await pool.connect();
+    let values = urls.map(url => `(${id}, '${url}')`).join(", ");
+    // FIXME: templating
+    try {
+      res = await client.query(
+        `INSERT INTO ${table} (review_id, url) VALUES ${values};`
+      );
+    } catch (err) {
+      throw err;
+    } finally {
+      client.release();
+    }
+    return res.rows;
   }
 };

@@ -16,5 +16,19 @@ module.exports = {
       client.release();
     }
     return res.rows;
+  },
+
+  updateScore: async function updateScore(id, rating) {
+    const client = await pool.connect();
+    try {
+      res = await client.query(
+        `UPDATE ${table} SET score = score + $1, reviews = reviews + 1 WHERE id = $2;`,
+        [rating, id]
+      );
+    } catch (err) {
+      throw err;
+    } finally {
+      client.release();
+    }
   }
 };
