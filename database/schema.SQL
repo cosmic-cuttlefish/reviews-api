@@ -1,7 +1,7 @@
 DROP TABLE IF EXISTS review CASCADE;
 
 CREATE TABLE review (
-  id INTEGER NOT NULL,
+  id INTEGER DEFAULT nextval('review_id_seq'::regclass), --THIS MAY NEED TO BE UPDATED
   product_id INTEGER NOT NULL,
   rating INTEGER NOT NULL,
   summary VARCHAR(255) NOT NULL,
@@ -24,7 +24,7 @@ CREATE TABLE review (
 DROP TABLE IF EXISTS review_photo CASCADE;
 
 CREATE TABLE review_photo (
-  id INTEGER NOT NULL PRIMARY KEY,
+  id INTEGER DEFAULT nextval('review_photo_id_seq'::regclass), --THIS MAY NEED TO BE UPDATED
   review_id INTEGER NOT NULL,
   url VARCHAR(255) NOT NULL
 );
