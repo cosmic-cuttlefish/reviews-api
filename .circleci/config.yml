@@ -6,8 +6,8 @@ jobs:
     steps:
       - checkout # check out the code in the project directory
       - run:
-        name: get nvm
-        command: curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.1/install.sh | bash
+          name: get nvm
+          command: curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.1/install.sh | bash
       - run:
           name: use later node
           command: sudo nvm use v10.15.3
