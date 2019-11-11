@@ -6,7 +6,7 @@ jobs:
     steps:
       - checkout # check out the code in the project directory
       - run:
-          name: update-npm
-          command: sudo npm install -g npm
+          name: use later node
+          command: sudo nvm use v10.15.3
       - run: cd server && npm install
       - run: cd server && npm test
