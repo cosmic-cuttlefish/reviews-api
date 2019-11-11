@@ -1,0 +1,11 @@
+postgres:
+  image: postgres:11.5
+  ports:
+    - 5432:5432
+  environment:
+    - POSTGRES_USER=root
+    - POSTGRES_PASSWORD=shigity13
+    - POSTGRES_DB=reviews
+    - POSTGRES_PORT=5432
+  volumes:
+    - ./data/dump:/dump
