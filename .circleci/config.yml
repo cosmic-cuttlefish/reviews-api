@@ -7,6 +7,6 @@ jobs:
       - checkout # check out the code in the project directory
       - run:
           name: update-npm
-          command: sudo npm install -g npm@latest
+          command: sudo npm install -g npm
       - run: cd server && npm install
       - run: cd server && npm test
