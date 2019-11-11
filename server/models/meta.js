@@ -18,5 +18,19 @@ module.exports = {
       client.release();
     }
     return res.rows[0];
+  },
+
+  updateRatings: async function updateRatings(productId, rating) {
+    const client = await pool.connect();
+    try {
+      res = await client.query(
+        `UPDATE ${table} SET rating_${rating} = rating_${rating} + 1 WHERE product_id = $1;`,
+        [productId]
+      );
+    } catch (err) {
+      throw err;
+    } finally {
+      client.release();
+    }
   }
 };

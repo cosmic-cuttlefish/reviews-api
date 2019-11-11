@@ -3,8 +3,8 @@ const { getPhotos } = require("../models/photos");
 
 module.exports = async function getReviewList(req, res) {
   const { productid } = req.params;
-  const { page, limit } = req.query;
-  let reviews = await getReviews(productid, page, limit);
+  const { page, limit, sort } = req.query;
+  let reviews = await getReviews(productid, page, limit, sort);
   const ids = reviews.map(review => review.review_id);
   const photos = await getPhotos(ids);
   for (let i = 0; i < reviews.length; i++) {

@@ -1,5 +1,6 @@
 const { getCharacteristics } = require("../models/characteristics");
 const { addReview, getReviewId } = require("../models/reviews");
+const { updateRatings } = require("../models/meta");
 const { addPhotos } = require("../models/photos");
 const { updateScore } = require("../models/characteristics");
 const errMessage = (missing, param) =>
@@ -79,6 +80,7 @@ module.exports = async function postReview(req, res) {
   } else {
     try {
       await addReview(productid, req.body);
+      await updateRatings(productid, req.body.rating);
       // FIXME: optimize with id instead of select
       const reviewId = await getReviewId(productid, req.body);
       if (req.body.photos && req.body.photos.length > 0) {

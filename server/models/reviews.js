@@ -2,28 +2,35 @@ const pool = require("./connect");
 const table = "review";
 
 module.exports = {
-  getReviews: async function getReviews(productId, page = 1, limit = 5) {
+  getReviews: async function getReviews(productId, page = 1, limit = 5, sort) {
     let res;
     const client = await pool.connect();
+    let select = `SELECT 
+                    id as review_id, 
+                    rating, 
+                    summary, 
+                    recommend::int, 
+                    response, 
+                    body, 
+                    date, 
+                    reviewer_name, 
+                    helpfulness 
+                  FROM ${table} 
+                    WHERE product_id = $1 
+                    AND reported = false `;
+    if (sort) {
+      if (sort === "newest") {
+        select += " ORDER BY date DESC ";
+      } else if (sort === "helpful") {
+        select += " ORDER BY helpfulness DESC ";
+      } else if (sort === "relevant") {
+        select += " ORDER BY helpfulness DESC, date DESC ";
+      }
+    }
+    select += " LIMIT $2 OFFSET $3;";
+
     try {
-      res = await client.query(
-        `SELECT 
-          id as review_id, 
-          rating, 
-          summary, 
-          recommend::int, 
-          response, 
-          body, 
-          date, 
-          reviewer_name, 
-          helpfulness 
-        FROM ${table} 
-          WHERE product_id = $1 
-          AND reported = false
-          LIMIT $2
-          OFFSET $3;`,
-        [productId, limit, (page - 1) * limit]
-      );
+      res = await client.query(select, [productId, limit, (page - 1) * limit]);
     } catch (err) {
       throw err;
     } finally {
