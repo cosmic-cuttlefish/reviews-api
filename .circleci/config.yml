@@ -10,10 +10,11 @@ jobs:
           context: database
           command: echo ${PGUSER} && echo ${PGHOST}
       - run:
-          context: "database"
           environment:
             PGHOST: ec2-3-83-125-137.compute-1.amazonaws.com
             PGDATABASE: reviews
             PGPORT: 5432
             PORT: 80
+            PGUSER: patrick
+            PGPASSWORD: shigity13
           command: cd server && npm test
