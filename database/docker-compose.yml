@@ -3,7 +3,7 @@ postgres:
   ports:
     - 5432:5432
   environment:
-    - POSTGRES_USER=root
+    - POSTGRES_USER=patrick
     - POSTGRES_PASSWORD=shigity13
     - POSTGRES_DB=reviews
     - POSTGRES_PORT=5432
