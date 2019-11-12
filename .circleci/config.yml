@@ -8,6 +8,9 @@ jobs:
       - run: cd server && npm install
       - run:
           context: database
+          command: echo ${PGUSER} && echo ${PGHOST}
+      - run:
+          context: database
           environment:
             PGHOST: ec2-3-83-125-137.compute-1.amazonaws.com
             PGDATABASE: reviews
