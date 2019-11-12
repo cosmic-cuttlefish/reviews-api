@@ -3,8 +3,9 @@ jobs:
   build:
     docker:
       - image: circleci/node:9.11.2 # the primary container, where your job's commands are run
-    context: database
     steps:
       - checkout # check out the code in the project directory
       - run: cd server && npm install
-      - run: cd server && npm test
+      - run:
+        context: database
+        command: cd server && npm test
