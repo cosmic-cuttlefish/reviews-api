@@ -7,5 +7,5 @@ jobs:
       - checkout # check out the code in the project directory
       - run: cd server && npm install
       - run:
-        context: database
-        command: cd server && npm test
+          context: database
+          command: cd server && npm test
