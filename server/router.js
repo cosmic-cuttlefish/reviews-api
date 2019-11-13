@@ -10,5 +10,8 @@ router.get("/:productid/meta", getReviewMeta);
 router.post("/:productid", postReview);
 router.put("/helpful/:reviewid", putHelpful);
 router.put("/report/:reviewid", putReport);
+router.get("/loaderio-558608253c12a45969cc235fb1deb0d2", (req, res) => {
+	res.send('loaderio-558608253c12a45969cc235fb1deb0d2');
+});
 
 module.exports = router;
