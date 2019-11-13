@@ -4,7 +4,6 @@ const { getCharacteristics } = require("../models/characteristics");
 module.exports = async function getReviewMeta(req, res) {
   const { productid } = req.params;
   const reviewMeta = await getMeta(productid);
-  const recommend = await getRecommend(productid);
   const characteristics = await getCharacteristics(productid);
   let meta = {
     product_id: productid,
@@ -18,11 +17,12 @@ module.exports = async function getReviewMeta(req, res) {
         const rating = key[key.length - 1];
         meta.ratings[rating] = reviewMeta[key];
       }
+    } else if (key.startsWith("recommend_")) {
+      const recommendScore = key[key.length - 1];
+      meta.recommend[recommendScore] = reviewMeta[key];
     }
   }
-  for (let row of recommend) {
-    meta.recommend[row.recommend] = +row.count;
-  }
+
   for (let characteristic of characteristics) {
     meta.characteristics[characteristic.name] = {
       id: characteristic.id,
