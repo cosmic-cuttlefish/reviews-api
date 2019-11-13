@@ -1,0 +1,36 @@
+config:
+  target: "http://localhost:80"
+  phases:
+    - duration: 10
+      arrivalRate: 10
+      rampTo: 50
+    - duration: 20
+      arrivalRate: 50
+      rampTo: 200
+    - duration: 20
+      arrivalRate: 200
+  payload:
+    path: "../../database/data/product_ids.csv"
+    fields:
+      - "id"
+    skipHeader: true
+scenarios:
+  - flow:
+      - post:
+          url: "/253"
+          json:
+            rating: 5
+            summary: "best product"
+            body: "best product ever made brooooooooooooooooooooooooooo"
+            recommend: true
+            response: ""
+            reviewer_name: "shooter"
+            reviewer_email: "shooter.mcgavin@golf.com"
+            photos:
+              - "https://photo1.com"
+              - "https://photo2.com"
+            characteristics:
+              "838": 5
+              "839": 5
+              "840": 5
+              "841": 5

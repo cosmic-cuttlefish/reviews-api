@@ -11,7 +11,6 @@ const errMessage = (missing, param) =>
 const validateReview = (body, reqCharacteristics) => {
   for (let param in body) {
     value = body[param];
-    let err = false;
     switch (param) {
       case "rating":
         if (value === undefined) return errMessage(true);
