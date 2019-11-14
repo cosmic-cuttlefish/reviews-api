@@ -1,11 +1,16 @@
-postgres:
-  image: postgres:11.5
-  ports:
-    - 5432:5432
-  environment:
-    - POSTGRES_USER=patrick
-    - POSTGRES_PASSWORD=shigity13
-    - POSTGRES_DB=reviews
-    - POSTGRES_PORT=5432
-  volumes:
-    - ./data/dump:/dump
+version: "3.7"
+services:
+  postgres:
+    image: postgres:11.5
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=patrick
+      - POSTGRES_PASSWORD=shigity13
+      - POSTGRES_DB=reviews
+      - POSTGRES_PORT=5432
+    volumes:
+      - ./data/dump:/dump
+networks:
+  backend:
+    driver: bridge

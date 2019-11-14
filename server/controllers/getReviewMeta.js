@@ -1,5 +1,4 @@
 const { getMeta } = require("../models/meta");
-const { getRecommend } = require("../models/reviews");
 const { getCharacteristics } = require("../models/characteristics");
 module.exports = async function getReviewMeta(req, res) {
   const { productid } = req.params;
