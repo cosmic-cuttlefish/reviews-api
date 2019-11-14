@@ -21,17 +21,18 @@ def transform_product_csv(file_path, file_name, small=False):
     df = pd.read_csv(file_path + file_name, dtype=dtype)
     df = df['id']
     df.columns = ['product_id']
-    df.insert(1, 'rating_0', 0)
-    df.insert(2, 'rating_1', 0)
-    df.insert(3, 'rating_2', 0)
-    df.insert(4, 'rating_3', 0)
-    df.insert(5, 'rating_4', 0)
-    df.insert(6, 'rating_5', 0)
+    # df.insert(1, 'rating_0', 0)
+    # df.insert(2, 'rating_1', 0)
+    # df.insert(3, 'rating_2', 0)
+    # df.insert(4, 'rating_3', 0)
+    # df.insert(5, 'rating_4', 0)
+    # df.insert(6, 'rating_5', 0)
     df.to_csv(file_path + 'transformed_' + file_name, index=False)
 
     if small:
         os.remove(file_path + file_name)
 
+transform_product_csv('./data/', 'product.csv')
 
 def load_meta(small=False):
     file_path = './data/'
