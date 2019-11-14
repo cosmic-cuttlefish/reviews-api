@@ -20,11 +20,13 @@ module.exports = {
     return res.rows[0];
   },
 
-  updateRatings: async function updateRatings(productId, rating) {
+  updateMetaScores: async function updateRatings(productId, rating, rec) {
+    const recNum = +rec;
     const client = await pool.connect();
     try {
       res = await client.query(
-        `UPDATE ${table} SET rating_${rating} = rating_${rating} + 1 WHERE product_id = $1;`,
+        `UPDATE ${table} SET rating_${rating} = rating_${rating} + 1, 
+          recommend_${recNum} = recommend_${recNum} + 1 WHERE product_id = $1;`,
         [productId]
       );
     } catch (err) {

@@ -2,14 +2,17 @@ from db_connect import connect
 from math import floor
 import time
 
-
+""" 
+    THIS IS DEPRECATED, added loop within SQL query to increase performance, especially when connected to a database 
+    over the network
+"""
 def migrate_01():
     start = time.time()
     conn = connect()
     cur = conn.cursor()
     conn.set_session(autocommit=True)
 
-    # cur.execute(open("sql/migrate_01.sql", "r").read())
+    cur.execute(open("sql/migrate_01.sql", "r").read())
     cur.execute("SELECT product_id FROM meta;")
     reviews = cur.fetchall()
     for review in reviews:
@@ -24,5 +27,3 @@ def migrate_01():
     conn.close()
     end = time.time()
     print(f"{floor((end - start) / 60)} minutes {(end - start) % 60} seconds")
-
-migrate_01()
