@@ -6,9 +6,9 @@ services:
     networks:
       - backend
     environment:
-      PORT: 8080
+      PORT: 80
     ports:
-      - "8080:8080"
+      - "80:80"
     deploy:
       restart_policy:
         condition: on-failure
