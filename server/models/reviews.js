@@ -2,7 +2,7 @@ const pool = require("./connect");
 const table = "review";
 
 module.exports = {
-  getReviews: async function getReviews(productId, page = 1, limit = 5, sort) {
+  getReviews: async function getReviews(productId, page, limit, sort) {
     let res;
     const client = await pool.connect();
     let select = `SELECT 
@@ -37,6 +37,21 @@ module.exports = {
       client.release();
     }
     return res.rows;
+  },
+
+  getReviewById: async function getReviewById(reviewId) {
+    const client = await pool.connect();
+    let res;
+    try {
+      res = await client.query("SELECT * from review WHERE id = $1", [
+        reviewId
+      ]);
+    } catch (err) {
+      throw err;
+    } finally {
+      client.release();
+    }
+    return res.rows[0];
   },
 
   getReviewId: async function getReviewId(productId, data) {
