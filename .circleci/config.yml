@@ -18,7 +18,7 @@ jobs:
           key: dependency-cache-{{ checksum "server/package-lock.json" }}
       - run:
           environment:
-            PGHOST: ec2-54-167-192-28.compute-1.amazonaws.com
+            PGHOST: 52.205.27.27
             PGDATABASE: reviews
             PGPORT: 5432
             PORT: 80

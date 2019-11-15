@@ -3,6 +3,9 @@ const { addReview, getReviewId } = require("../models/reviews");
 const { updateMetaScores } = require("../models/meta");
 const { addPhotos } = require("../models/photos");
 const { updateScore } = require("../models/characteristics");
+const { listCache } = require("./getReviewList");
+const { metaCache } = require("./getReviewMeta");
+
 const errMessage = (missing, param) =>
   missing
     ? "missing parameter" + param
@@ -90,6 +93,8 @@ module.exports = async function postReview(req, res) {
         await updateScore(characteristicId, rating);
       }
       res.sendStatus(201);
+      listCache.del(productid);
+      metaCache.del(productid);
     } catch (err) {
       console.error(err);
       res.sendStatus(500);

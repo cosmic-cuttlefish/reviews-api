@@ -1,5 +1,5 @@
-const { flagReported } = require("../models/reviews");
-
+const { flagReported, getReviewById } = require("../models/reviews");
+const { listCache } = require("./getReviewList");
 module.exports = async function putHelpful(req, res) {
   const { reviewid } = req.params;
   if (reviewid === undefined) {
@@ -7,4 +7,6 @@ module.exports = async function putHelpful(req, res) {
   }
   await flagReported(reviewid);
   res.sendStatus(204);
+  const { product_id: productId } = await getReviewById(reviewid);
+  listCache.del("" + productId);
 };
