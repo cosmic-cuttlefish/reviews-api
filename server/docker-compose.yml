@@ -1,7 +1,7 @@
 version: "3.7"
 services:
   api:
-    image: reviews-api
+    image: pschwagler/reviews-api:1.1
     build:
       context: .
       dockerfile: ./Dockerfile
