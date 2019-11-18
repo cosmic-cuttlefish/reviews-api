@@ -4,7 +4,7 @@ services:
     image: reviews-api
     build:
       context: .
-      dockerfile: ./dockerfile
+      dockerfile: ./Dockerfile
     networks:
       - backend
     environment:

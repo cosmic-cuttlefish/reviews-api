@@ -11,8 +11,8 @@ router.get("/:productid/meta", getReviewMeta);
 router.post("/:productid", postReview);
 router.put("/helpful/:reviewid", putHelpful);
 router.put("/report/:reviewid", putReport);
-router.get("/loaderio-86affb8d108df7e109e2250ca6f8f526", (req, res) => {
-  res.send("loaderio-86affb8d108df7e109e2250ca6f8f526");
+router.get("/loaderio-1b45a2e15cd77da15ca2ef2f3b90fa34", (req, res) => {
+  res.send("loaderio-1b45a2e15cd77da15ca2ef2f3b90fa34");
 });
 router.get("/check", (req, res) => res.sendStatus(200));
 
