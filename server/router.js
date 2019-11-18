@@ -20,10 +20,10 @@ router.get("/server", (req, res) => {
   request.get("http://checkip.amazonaws.com", (err, reqRes, body) => {
     if (err) {
       console.log(err);
-      res.send(400);
+      return res.send(400);
     }
 
-    return res.send(body);
+    res.send(body);
   });
 });
 
